@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sale Profit Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <!-- Application Scripts -->
+    <script src="js/app.js" defer></script>
+    <script src="js/pdf-generator.js" defer></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    
+    <div class="container mx-auto p-6 max-w-7xl">
+        <h1 class="text-4xl font-bold text-center text-blue-600 mb-8">Sale Profit Management System</h1>
+        
+        <!-- Date Input Section -->
+        <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-lg p-6 mb-8">
+            <div class="flex items-center justify-center gap-4">
+                <label for="reportDate" class="text-white font-semibold text-lg">Report Date:</label>
+                <input type="date" id="reportDate" class="border-2 border-white rounded-lg px-4 py-2 text-lg focus:outline-none focus:ring-4 focus:ring-yellow-300 shadow-md">
+            </div>
+        </div>
+        
+        <!-- Phone Chart Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Phone Chart</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
+                <input type="text" id="phoneModel" placeholder="Model" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" id="phoneImei" placeholder="IMEI" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" id="phoneColour" placeholder="Colour" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" id="phoneOwner" placeholder="Owner" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="number" id="phoneRevenue" placeholder="Revenue" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="number" id="phoneCost" placeholder="Cost" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <button onclick="addPhoneEntry()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition mb-4">
+                Calculate & Add
+            </button>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse border border-gray-300">
+                    <thead class="bg-blue-100">
+                        <tr>
+                            <th class="border border-gray-300 px-4 py-2">Model</th>
+                            <th class="border border-gray-300 px-4 py-2">IMEI</th>
+                            <th class="border border-gray-300 px-4 py-2">Colour</th>
+                            <th class="border border-gray-300 px-4 py-2">Owner</th>
+                            <th class="border border-gray-300 px-4 py-2">Revenue</th>
+                            <th class="border border-gray-300 px-4 py-2">Cost</th>
+                            <th class="border border-gray-300 px-4 py-2">Profit</th>
+                            <th class="border border-gray-300 px-4 py-2">Thabrew (80%)</th>
+                            <th class="border border-gray-300 px-4 py-2">Kelan (20%)</th>
+                            <th class="border border-gray-300 px-4 py-2">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="phoneTableBody">
+                    </tbody>
+                    <tfoot class="bg-green-100 font-bold">
+                        <tr>
+                            <td colspan="4" class="border border-gray-300 px-4 py-2 text-right">TOTAL:</td>
+                            <td class="border border-gray-300 px-4 py-2" id="phoneTotalRevenue">0.00</td>
+                            <td class="border border-gray-300 px-4 py-2" id="phoneTotalCost">0.00</td>
+                            <td class="border border-gray-300 px-4 py-2" id="phoneTotalProfit">0.00</td>
+                            <td class="border border-gray-300 px-4 py-2" id="phoneTotalThabrew">0.00</td>
+                            <td class="border border-gray-300 px-4 py-2" id="phoneTotalKelan">0.00</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Accessories Chart Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Accessories Chart</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <input type="text" id="accessoryModel" placeholder="Model" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="number" id="accessoryRevenue" placeholder="Revenue" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="number" id="accessoryCost" placeholder="Cost" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <button onclick="addAccessoryEntry()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition mb-4">
+                Calculate & Add
+            </button>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse border border-gray-300">
+                    <thead class="bg-blue-100">
+                        <tr>
+                            <th class="border border-gray-300 px-4 py-2">Model</th>
+                            <th class="border border-gray-300 px-4 py-2">Revenue</th>
+                            <th class="border border-gray-300 px-4 py-2">Cost</th>
+                            <th class="border border-gray-300 px-4 py-2">Profit</th>
+                            <th class="border border-gray-300 px-4 py-2">Thabrew (80%)</th>
+                            <th class="border border-gray-300 px-4 py-2">Kelan (20%)</th>
+                            <th class="border border-gray-300 px-4 py-2">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="accessoryTableBody">
+                    </tbody>
+                    <tfoot class="bg-green-100 font-bold">
+                        <tr>
+                            <td class="border border-gray-300 px-4 py-2 text-right">TOTAL:</td>
+                            <td class="border border-gray-300 px-4 py-2" id="accessoryTotalRevenue">0.00</td>
+                            <td class="border border-gray-300 px-4 py-2" id="accessoryTotalCost">0.00</td>
+                            <td class="border border-gray-300 px-4 py-2" id="accessoryTotalProfit">0.00</td>
+                            <td class="border border-gray-300 px-4 py-2" id="accessoryTotalThabrew">0.00</td>
+                            <td class="border border-gray-300 px-4 py-2" id="accessoryTotalKelan">0.00</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Owner Profit Shares Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            
+            <!-- Thabrew Profit Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Thabrew Profit</h2>
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <input type="text" id="thabrewDescription" placeholder="Description" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <input type="number" id="thabrewAmount" placeholder="Amount" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+                
+                <button onclick="addThabrewEntry()" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition mb-4">
+                    Add Entry
+                </button>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse border border-gray-300">
+                        <thead class="bg-green-100">
+                            <tr>
+                                <th class="border border-gray-300 px-4 py-2">Description</th>
+                                <th class="border border-gray-300 px-4 py-2">Amount</th>
+                                <th class="border border-gray-300 px-4 py-2">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="thabrewTableBody">
+                        </tbody>
+                        <tfoot class="bg-green-200 font-bold">
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2 text-right">TOTAL:</td>
+                                <td class="border border-gray-300 px-4 py-2" id="thabrewTotal">0.00</td>
+                                <td class="border border-gray-300 px-4 py-2"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Kelan Profit Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Kelan Profit</h2>
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <input type="text" id="kelanDescription" placeholder="Description" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <input type="number" id="kelanAmount" placeholder="Amount" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                
+                <button onclick="addKelanEntry()" class="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 transition mb-4">
+                    Add Entry
+                </button>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse border border-gray-300">
+                        <thead class="bg-purple-100">
+                            <tr>
+                                <th class="border border-gray-300 px-4 py-2">Description</th>
+                                <th class="border border-gray-300 px-4 py-2">Amount</th>
+                                <th class="border border-gray-300 px-4 py-2">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="kelanTableBody">
+                        </tbody>
+                        <tfoot class="bg-purple-200 font-bold">
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2 text-right">TOTAL:</td>
+                                <td class="border border-gray-300 px-4 py-2" id="kelanTotal">0.00</td>
+                                <td class="border border-gray-300 px-4 py-2"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Button -->
+        <div class="text-center mb-8">
+            <button onclick="generatePDF()" class="bg-red-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-red-700 transition shadow-lg">
+                📄 Generate PDF Report
+            </button>
+        </div>
+    </div>
+</body>
+</html>
